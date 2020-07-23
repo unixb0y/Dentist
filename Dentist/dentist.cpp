@@ -173,7 +173,8 @@ errno_t Connector::ctlHandleWrite(kern_ctl_ref ctlref, unsigned int unit, void *
     lilu_os_memcpy(data_bkup, data, mbuf_len(m));
     data_bkup[mbuf_len(m)] = 0x01;
     
-    Connector::instance->IOBluetoothHostControllerUSBTransport_SendHCIRequest(Connector::instance->ioBTInstance, data, mbuf_len(m));
+    Connector::instance->IOBluetoothHostControllerUSBTransport_ReceiveInterruptData(Connector::instance->ioBTInstance, data, mbuf_len(m), true);
+//    Connector::instance->IOBluetoothHostControllerUSBTransport_SendHCIRequest(Connector::instance->ioBTInstance, data, mbuf_len(m));
     
     error = ctl_enqueuedata(Connector::instance->mCtlref, Connector::instance->mClient.sc_unit, (uint8_t*)&data_bkup, sizeof(data_bkup), 0);
     if (error != KERN_SUCCESS) {
