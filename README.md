@@ -3,6 +3,8 @@ Dentist
 
 An open source kernel extension providing user level access to IOBluetoothFamily functions.
 
+It's called Dentist, because it pokes around in Bluetooth, just like a dentist does.
+
 #### Features
 - Planned to attach to Frankenstein for Bluetooth firmware fuzzing.
 - It is also possible to fuzz IOBluetoothFamily drivers of course.
