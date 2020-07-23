@@ -9,6 +9,9 @@ It's called Dentist, because it pokes around in Bluetooth, just like a dentist d
 - Planned to attach to Frankenstein for Bluetooth firmware fuzzing.
 - It is also possible to fuzz IOBluetoothFamily drivers of course.
 - Use `corpus_creator` script to save data from chip to driver to a file.
+- Use this command to see debug output from `Dentist`:
+
+    `log stream --info --debug --predicate 'senderImagePath contains "Dentist"'`
 
 #### Boot-args
 - `-dentistoff` disables kext loading
