@@ -4,8 +4,9 @@ Dentist
 An open source kernel extension providing user level access to IOBluetoothFamily functions.
 
 #### Features
-- Planned to attach to Frankenstein for Bluetooth fuzzing.
+- Planned to attach to Frankenstein for Bluetooth firmware fuzzing.
 - It is also possible to fuzz IOBluetoothFamily drivers of course.
+- Use `corpus_creator` script to save data from chip to driver to a file.
 
 #### Boot-args
 - `-dentistoff` disables kext loading
