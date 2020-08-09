@@ -74,8 +74,8 @@ int err(int code) {
 
 int main(const int argc, char **argv) {
     if (argc < 2 || (strcmp(argv[1], "-log") && strcmp(argv[1], "-monitor"))) {
-        printf("Usage: corpus_creator [-log] or\n\
-                      [-monitor]\n");
+        printf("Usage: logger [-log] or\n\
+              [-monitor]\n");
         return -1;
     }
 
