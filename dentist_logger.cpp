@@ -11,6 +11,38 @@
 
 using namespace std;
 
+void colorchar(uint8_t c) {
+    if ( c == 0x0 ) {
+        printf("\e[38;5;244m");
+    }
+    else if ( isalpha(c) ) {
+        printf("\e[38;5;208m");
+    }
+    else if ( isdigit(c) ) {
+        printf("\e[38;5;226m");
+    }   
+    else if ( !isprint(c) ) {
+        printf("\e[38;5;196m");
+    }
+    else if ( isspace(c) ) {
+        printf("\e[38;5;40m");
+    }
+    else if ( ispunct(c) ) {
+    //  printf("\e[38;5;164m");
+        printf("\e[38;5;201m");
+    }
+    else if ( c < 16 ) {
+        printf("\e[0;32m");
+    }
+    else if ( c >= 16 && c <= 31 ) {
+        printf("\e[1;35m");
+    }
+}
+
+void resetcolor(void) {
+    printf("\033[0m");
+}
+
 int ahex2int(char a, char b) {
     a = (a <= '9') ? a - '0' : (a & 0x7) + 9;
     b = (b <= '9') ? b - '0' : (b & 0x7) + 9;
@@ -21,61 +53,56 @@ void format(string str) {
     int string_len = str.size();
     int line_written_chars = 0;
 
-    for (int i=0; i<string_len; i++) {
-        if ( i%2 ) {
-            printf("%c ", str[i]);
-            line_written_chars += 2;
-        }
-        else {
-            printf("%c", str[i]);
-            line_written_chars += 1;
-        }
+    for (int i=0; i<string_len/2; i++) {
+        uint8_t character = (char)ahex2int(str[i*2], str[i*2+1]);
+        colorchar(character);
+        printf("%02X ", character);
+        resetcolor();
+        line_written_chars += 3;
 
-        if ( i%8 == 7 ) {
+        if ( i%4 == 3 ) {
             printf(" ");
             line_written_chars += 1;
         }
 
         bool need_ascii_now = false;
-        if ( i+1 == string_len && i%32 != 31 ) {
+        if ( i+1 == string_len/2 && i%16 != 15 ) {
             need_ascii_now = true;
             for (int k=0; k<(52-line_written_chars); k++) printf(" ");
         }
 
-        if ( i%32 == 31 || need_ascii_now ) {
-            for (int j=(i-(i%32))/2; j<((i-31)/2)+16; j++) {
-                if ( j%4 == 0 ) printf("|");
-                int character = (char)ahex2int(str[j*2], str[j*2+1]);
+        if ( i%16 == 15 || need_ascii_now ) {
+            printf("|");
+            for (int j=(i-(i%16)); j<(i+1); j++) {
+                uint8_t character = (char)ahex2int(str[j*2], str[j*2+1]);
+                colorchar(character);
                 printf("%c", character > 32 && character < 127 ? (char)character : '.');
+                resetcolor();
+                if ( j%4 == 3 ) printf("|");
             }
-            printf("|\n");
+            printf("\n");
             line_written_chars = 0;
         }
     }
 
-    printf("\n\n");
+    printf("\n");
 }
 
 int err(int code) {
     switch (code) {
-        case 1:
-            printf("[ERR] Could not create socket.\n");
-        case 2:
-            printf("[ERR] Could not find Kernel Control.\n");
-        case 3:
-            printf("[ERR] Could not create connection.\n");
-        case 4:
-            printf("[ERR] Could not open corpus file.\n");
-        default:
-            printf("[ERR] Unknown error code.\n");
+        case 1: printf("[ERR] Could not create socket.\n");
+        case 2: printf("[ERR] Could not find Kernel Control.\n");
+        case 3: printf("[ERR] Could not create connection.\n");
+        case 4: printf("[ERR] Could not open corpus file.\n");
+        default: printf("[ERR] Unknown error code.\n");
     }
     exit(-1);
 }
 
 int main(const int argc, char **argv) {
     if (argc < 2 || (strcmp(argv[1], "-log") && strcmp(argv[1], "-monitor"))) {
-        printf("Usage: logger [-log] or\n\
-              [-monitor]\n");
+        printf("Usage: dentist_logger [-log] or\n\
+                      [-monitor]\n");
         return -1;
     }
 
